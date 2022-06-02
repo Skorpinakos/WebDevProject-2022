@@ -1,0 +1,112 @@
+<div class="container-fluid">   
+    <div class="my-5 d-flex justify-content-center">
+        {{!<img class='rounded img-fluid' src="images/map_screenshot.png"></img>}}
+        <img id='load_it'  class='load_it' style='display:none' src="images/map_screenshot.png"></img>
+        <canvas id="myCanvas" width="1100" height="600"></canvas>
+        <script src="scripts/draw_map_front_page.js"></script>
+    </div> 
+    <div class="row">
+        <div class="col-2 my-3"></div>
+
+        <div class="col-8 my-3">
+            <form method="POST" action="/admin_update" enctype="multipart/form-data">
+            {{#with failure_info}}
+                <div hidden>
+                    <input type="text" class="form-control" size="30"  id="West" name="West" placeholder=id required>
+                </div>
+                <h3 class="my-1">Τοποθεσία</h3>
+                <div class="row">
+                    <legend for="coords"> Συντεταγμένες </legend>
+                    <em class="mb-1"> Μπορείτε να εισάγετε τις συντεταγμένες κάνοντας click στον παραπάνω χάρτη.</em>
+                    <div class="col-6 my-2">
+                        <label for="coords"> Δυτικά </label>
+                        <input type="text" class="form-control" size="30"  id="West" name="West" placeholder="{{coordinates_x}}" required>
+                    </div>
+                    <div class="col-6 my-2">
+                        <label for="coords"> Βόρεια </label>
+                        <input type="text" class="form-control" size="30"  id="North" name="North" placeholder="{{coordinates_y}}" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 my-2">
+                        <legend for="building"> Κτίριο </legend>
+                        <select class="form-control" id = "building" name="building" required>
+                            <option value="{{building}}">{{building}}</option>
+                        {{/with}}
+                            {{#each buildings}}
+                                <option value="{{{name}}}"> {{name}} </option>
+                            {{/each}}
+                        {{#with failure_info}}
+                        </select>
+                    </div>
+                </div>
+
+                <h3 class="my-2"> Κατηγορία </h3>
+                    <div class="row">
+                        <div class="col-12 my-2">
+                        <select class="form-control" id = "category" name="category" required>
+                            <option value="{{category}}">{{category}}</option>
+                        {{/with}}
+                            {{#each categories }}
+                                <option value={{name}}> {{name}} </option>
+                            {{/each}}
+                        {{#with failure_info}}
+                        </select>
+                    </div>
+                </div>
+
+                <h3 class="my-2"> Στοιχεία επικοινωνίας </h3>
+                    <div class="row">
+                        <div class="col-6 my-2">
+                            <input class="form-control" type="text" size="30"  id="title" name="title" placeholder="{{contact_phone}}" required>
+                        </div>
+                        <div class="col-6 my-2">
+                            <input class="form-control" type="text" size="30"  id="title" name="title" placeholder="{{contact_email}}" required>
+                        </div>
+                    </div>
+
+                <h3 class="my-2"> Λεπτομέρειες αναφοράς </h3>
+                    <div class="row my-2">
+                        <legend for="title"> Τίτλος </legend>
+                        <input class="form-control" type="text" size="30"  id="title" name="title" placeholder="{{title}}" required>
+                    </div>
+                    <div class="row my-2">
+                        <legend for="description"> Περιγραφή </legend>
+                        <textarea rows="10" class="form-control" type="text" size="200" id="description" name="description" placeholder="" required>{{description}}</textarea>
+                    </div>
+
+                <div class="row my-4">
+                    <div class="col-3"></div>
+                    <div class="col-6 recent justify-content-center d-flex rounded"> 
+                        <img class='rounded img-fluid' src={{image_path}}>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+                {{/with}} 
+
+                <div class="row my-5">
+                    <div class="col-1 mt-4">
+                        <button type="submit" class="btn btn-danger" formaction="delete_report"> Διαγραφή </button>
+                    </div>
+                    <div class="col-10  mt-4">
+                        <div class="row text-center">
+                            <legend>Upload new Image</legend>
+                        </div>
+                        <div class="row">
+                            <div class="col-5"></div>
+                            <div class="col-2">
+                                <input type="file" name="image">
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="col-1 mt-4">
+                        <button type="submit" class="btn btn-primary"> Ενημέρωση </button>
+                    </div>
+                </div>          
+            </form>
+        </div>
+</div>
