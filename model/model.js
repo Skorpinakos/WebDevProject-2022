@@ -73,7 +73,7 @@ const get_search_results = (n,search_text, callback) => {
     let condition_string="t.title like ? OR t.description like ? OR t.id like ? OR l.building like ?"//.replaceAll('$',search_text);
     let value = "%"+String(search_text)+"%";
     //"t.title like '?' OR t.description like '?' OR t.creation_date like '?' OR t.closure_date like '?' OR t.id '?' OR l.building like '?'"
-    let sql="SELECT t.id,t.title,t.image_path,t.description,l.building FROM Ticket t LEFT JOIN Location l ON t.locale = l.id WHERE "+condition_string+" ORDER BY t.Creation_date LIMIT ?"
+    let sql="SELECT t.id,t.title,t.image_path,t.description,l.building FROM Ticket t LEFT JOIN Location l ON t.locale = l.id WHERE "+condition_string+" ORDER BY t.Creation_date DESC LIMIT ?"
     //console.log(sql);
     const db = new sqlite3.Database(db_name);
     db.all(sql, [value,value,value,value,n], (err, rows) => {
@@ -89,7 +89,7 @@ const get_search_results = (n,search_text, callback) => {
 
 const get_open_failures_coords = (n, callback) => {
 
-    let sql="SELECT t.id,l.coordinates_x,l.coordinates_y,t.state FROM Ticket t LEFT JOIN Location l ON t.locale = l.id WHERE t.state != 'Κλειστή' ORDER BY t.Creation_date LIMIT ?";
+    let sql="SELECT t.id,l.coordinates_x,l.coordinates_y,t.state FROM Ticket t LEFT JOIN Location l ON t.locale = l.id WHERE t.state != 'Κλειστή' ORDER BY t.Creation_date DESC LIMIT ?";
     const db = new sqlite3.Database(db_name);
     db.all(sql, [n], (err, rows) => {
     if (err) {
