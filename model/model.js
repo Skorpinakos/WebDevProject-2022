@@ -68,6 +68,14 @@ const get_failure_info = (id, callback) => {
     });
 }
 
+const update = (entity, attributes, values) =>{
+    // let condstr = attributes
+    // condval = self.values(conditions)
+    // newstr = self.conditions(new, ', ', table=table, upd=1)
+    // newval = self.values(new, table=table, ins=1)
+    // values = newval + condval
+    // query = f"UPDATE {table} SET {newstr} WHERE ({condstr});\n"
+}
 
 const get_search_results = (n,search_text, callback) => {
     let condition_string="t.title like ? OR t.description like ? OR t.id like ? OR l.building like ?"//.replaceAll('$',search_text);
@@ -163,5 +171,24 @@ const find_biggest_location_id = (callback) => {
     });
 }
 
-export {getRecents,get_search_results,get_open_failures_coords,find_biggest_failure_id,find_biggest_location_id,push_failure_in_db,push_location_in_db,get_failure_info,get_report_from_key,getAll};
+const delete_report = (id,callback) => {
+
+    const db = new sqlite3.Database(db_name);
+    let sql="DELETE FROM Ticket WHERE id = ?";
+    db.run(sql, [id], (err, rows) => {
+    if (err) {
+        db.close();
+        console.log(err);
+        callback(err, null)
+        db.close();
+        return;
+    }
+    getAll((err,rows)=>{
+        callback(null, rows)
+    });
+
+    });
+}
+
+export {getRecents,get_search_results,get_open_failures_coords,find_biggest_failure_id,find_biggest_location_id,push_failure_in_db,push_location_in_db,get_failure_info,get_report_from_key,getAll,delete_report};
 

@@ -217,7 +217,11 @@ let give_contractor_page = function(req,res){
 
           } 
         else{
-            res.render('contractor_page', {layout : 'layout',failure_info:rows[0],buildings : buildings, categories : categories});
+          let info_to_pass={};
+          Object.assign(info_to_pass,rows[0]);
+          info_to_pass['coords_to_show_x']=(info_to_pass['coordinates_x']*x_ratio+x0);
+          info_to_pass['coords_to_show_y']=(info_to_pass['coordinates_y']*y_ratio+y0);
+          res.render('contractor_page', {layout : 'layout',failure_info:info_to_pass, buildings : buildings, categories : categories});
         }
       });    // fed ton an #each helper), we can use #
       
@@ -255,9 +259,15 @@ let give_admin_page = function(req,res){
     model.get_failure_info(failure_id, (err, rows) => {   
         if (err){
           console.log(err.message);
-        } 
+        }
+        let info_to_pass={};
+        Object.assign(info_to_pass,rows[0]);
+     
+        info_to_pass['coords_to_show_x']=(info_to_pass['coordinates_x']*x_ratio+x0);
+        info_to_pass['coords_to_show_y']=(info_to_pass['coordinates_y']*y_ratio+y0);
+        
         //console.log(rows)
-        res.render('admin_page', {layout : 'layout',failure_info:rows[0]});
+        res.render('admin_page', {layout : 'layout',failure_info:info_to_pass});
       });
       
 };
@@ -373,8 +383,8 @@ let submit_report = function(req,res){
 };
 
 let admin_update = function(req,res){
-
-
+  let failure_id=req.query['failure_id'];
+  console.log(req.query);
 
 
 };
@@ -387,9 +397,14 @@ let contractor_update = function(req,res){
 };
 
 let delete_report = function(req,res){
-
-
-
+  let information='Βλάβες με χρονολογική σειρά'
+  let failure_id=req.query['failure_id'];
+      model.delete_report(failure_id, (err, rows) => {   
+          if (err){
+              console.log(err.message);
+          }
+          res.render('admin_history', {layout : 'layout', search_results:rows,information:information});
+      });
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// express routes
@@ -403,11 +418,11 @@ router.route('/failure').get(give_failure_page);
 router.route('/report_complete').post(upload.any(), submit_report);
 router.route('/contractor_login').get(give_contractor_login_page);
 router.route('/contractor_page').get(give_contractor_page);
-router.route('/contractor_update').get(contractor_update);
+router.route('/contractor_update').post(contractor_update);
 router.route('/admin_login').get(give_admin_login_page);
 router.route('/admin_history').get(give_admin_history);
 router.route('/admin_page').get(give_admin_page);
 router.route('/admin_update').post(upload.any(),admin_update);
-router.route('/delete_report').get(delete_report);
+router.route('/delete_report').post(delete_report);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////// initializing server
 app.listen(port, () => console.log(`App listening to port ${port}`));

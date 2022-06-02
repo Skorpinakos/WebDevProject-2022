@@ -1,9 +1,7 @@
 <div class="container-fluid">   
     <div class="my-5 d-flex justify-content-center">
-        {{!<img class='rounded img-fluid' src="images/map_screenshot.png"></img>}}
         <img id='load_it'  class='load_it' style='display:none' src="images/map_screenshot.png"></img>
         <canvas id="myCanvas" width="1100" height="600"></canvas>
-        <script src="scripts/draw_map_front_page.js"></script>
     </div> 
     <div class="row">
         <div class="col-2 my-3"></div>
@@ -17,14 +15,15 @@
                 <h3 class="my-1">Τοποθεσία</h3>
                 <div class="row">
                     <legend for="coords"> Συντεταγμένες </legend>
-                    <em class="mb-1"> Μπορείτε να εισάγετε τις συντεταγμένες κάνοντας click στον παραπάνω χάρτη.</em>
                     <div class="col-6 my-2">
                         <label for="coords"> Δυτικά </label>
-                        <input type="text" class="form-control" size="30"  id="West" name="West" placeholder="{{coordinates_x}}" required>
+                        <input type="text" class="form-control" size="30"  id="West" name="West" placeholder="{{coords_to_show_x}}">
+                        <p id = "x" style="display: none ;">{{coordinates_x}}</p>
                     </div>
                     <div class="col-6 my-2">
                         <label for="coords"> Βόρεια </label>
-                        <input type="text" class="form-control" size="30"  id="North" name="North" placeholder="{{coordinates_y}}" required>
+                        <input type="text" class="form-control" size="30"  id="North" name="North" placeholder="{{coords_to_show_y}}">
+                        <p id = "y" style="display: none ;">{{coordinates_y}}</p>
                     </div>
                 </div>
 
@@ -94,3 +93,4 @@
             </form>
         </div>
 </div>
+<script src="scripts/draw_map_failure_page.js"></script>
