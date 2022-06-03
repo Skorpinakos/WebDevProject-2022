@@ -5,12 +5,12 @@
     </div> 
     <div class="row">
         <div class="col-2 my-3"></div>
-
+        {{#with failure_info}}
         <div class="col-8 my-3">
-            <form method="POST" action="/contractor_update" enctype="multipart/form-data">
-            {{#with failure_info}}
+            <form method="POST" action="/contractor_update?failure_id={{id}}&locale_id={{locale}}&key={{key}}" enctype="multipart/form-data">
+            
                 <div hidden>
-                    <input type="text" class="form-control" size="30"  id="West" name="West" placeholder=id required>
+                    <input type="text" class="form-control" size="30"  id="West" name="West" placeholder=id>
                 </div>
                 <h3 class="my-1">Τοποθεσία</h3>
                 <div class="row">
@@ -30,7 +30,7 @@
                 <div class="row">
                     <div class="col-12 my-2">
                         <legend for="building"> Κτίριο </legend>
-                        <select class="form-control" id = "building" name="building" required>
+                        <select class="form-control" id = "building" name="building">
                             <option value="{{building}}">{{building}}</option>
                         {{/with}}
                             {{#each buildings}}
@@ -41,10 +41,24 @@
                     </div>
                 </div>
 
+                <h3 class="my-2"> Ημερομηνία δημιουργίας </h3>
+                <div class="row">
+                    <div class="col-12 my-2">
+                        <input class="form-control" type="text" size="30"  id="creation_date" name="creation_date" placeholder="{{creation_date}}">
+                    </div>
+                </div>
+
+                <h3 class="my-2"> Ημερομηνία αρχειοθέτησης </h3>
+                <div class="row">
+                    <div class="col-12 my-2">
+                        <input class="form-control" type="text" size="30"  id="closure_date" name="closure_date" placeholder="{{closure_date}}">
+                    </div>
+                </div>
+                
                 <h3 class="my-2"> Κατηγορία </h3>
                     <div class="row">
                         <div class="col-12 my-2">
-                        <select class="form-control" id = "category" name="category" required>
+                        <select class="form-control" id = "category" name="category">
                             <option value="{{category}}">{{category}}</option>
                         {{/with}}
                             {{#each categories }}
@@ -58,21 +72,37 @@
                 <h3 class="my-2"> Στοιχεία επικοινωνίας </h3>
                     <div class="row">
                         <div class="col-6 my-2">
-                            <p><strong>Τηλέφωνο:</strong> {{contact_phone}}</p>
+                            <div class="row">
+                                <div class="col-2">
+                                    <legend>Τηλέφωνο:</legend>
+                                </div>
+                                <div class="col-3 text-start">
+                                    <p class="fs-4">{{contact_phone}}</p>
+                                </div>
+                            
+                            </div>
                         </div>
                         <div class="col-6 my-2">
-                            <p><strong>E-mail:</strong> {{contact_email}}</p>
+                            <div class="row">
+                                <div class="col-2">
+                                    <legend>E-mail:</legend>
+                                </div>
+                                <div class="col-3 text-start">
+                                    <p class="fs-4">{{contact_email}}</p>
+                                </div>
+                            
+                            </div>
                         </div>
                     </div>
 
                 <h3 class="my-2"> Λεπτομέρειες αναφοράς </h3>
                     <div class="row my-2">
                         <legend for="title"> Τίτλος </legend>
-                        <input class="form-control" type="text" size="30"  id="title" name="title" placeholder="{{title}}" required>
+                        <input class="form-control" type="text" size="30"  id="title" name="title" placeholder="{{title}}">
                     </div>
                     <div class="row my-2">
                         <legend for="description"> Περιγραφή </legend>
-                        <textarea rows="10" class="form-control" type="text" size="200" id="description" name="description" placeholder="" required>{{description}}</textarea>
+                        <textarea rows="10" class="form-control" type="text" size="200" id="description" name="description" placeholder="">{{description}}</textarea>
                     </div>
 
                 <div class="row my-4">

@@ -79,7 +79,7 @@ entities_properties = {
     'Location': {"id": ['integer', True], "building": ['string', False], "coordinates_x": ['integer', False], "coordinates_y": ['integer', False]},
 
     'Ticket': {"id": ['integer', True], "title": ['string', False], "description": ['text', False], "creation_date": ['date', False],
-               "closure_date": ['date', False], "state": ['string', False], "image_path": ['string', False], "contact_phone": ['string', False], "contact_email": ['string', False],
+               "closure_date": ['date', False], "state": ['string', False], "image_path": ['string', False], "ip": ['string', False], "contact_phone": ['string', False], "contact_email": ['string', False],
                "locale": ['integer', False, 'Location', 'id'], "category": ['string', False]},
 
     'Contract': {"id": ['integer', True], "key": ['string', False, True], "details": ['text', False], "date": ['date', False],

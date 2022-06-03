@@ -5,9 +5,9 @@
     </div> 
     <div class="row">
         <div class="col-2 my-3"></div>
-    {{#with failure_info}}
+        {{#with failure_info}}
         <div class="col-8 my-3">
-            <form method="POST" action="/admin_update?failure_id={{id}}" enctype="multipart/form-data">
+            <form method="POST" action="/admin_update?failure_id={{id}}&locale_id={{locale}}" enctype="multipart/form-data">
                 <div hidden>
                     <input type="text" class="form-control" size="30"  id="West" name="West" placeholder=id>
                 </div>
@@ -30,7 +30,7 @@
                     <div class="col-12 my-2">
                         <legend for="building"> Κτίριο </legend>
                         <select class="form-control" id = "building" name="building">
-                            <option value="{{building}}">{{building}}</option>
+                            <option value="{{building}}" disabled selected hidden>{{building}}</option>
                         {{/with}}
                             {{#each buildings}}
                                 <option value="{{{name}}}"> {{name}} </option>
@@ -40,11 +40,42 @@
                     </div>
                 </div>
 
+
+                <h3 class="my-2"> Κατάσταση </h3>
+
+                    <div class="row">
+                        <div class="col-12 my-2">
+                        <select class="form-control" id = "state" name="state">
+                            <option value="{{state}}" disabled selected hidden>{{state}}</option>
+                        {{/with}}
+                            {{#each states }}
+                                <option value="{{{name}}}"> {{name}} </option>
+                            {{/each}}
+                        {{#with failure_info}}
+                        </select>
+                    </div>
+                </div>
+                
+                <h3 class="my-2"> Ημερομηνία δημιουργίας </h3>
+                <div class="row">
+                    <div class="col-12 my-2">
+                        <input class="form-control" type="text" size="30"  id="creation_date" name="creation_date" placeholder="{{creation_date}}">
+                    </div>
+                </div>
+
+                <h3 class="my-2"> Ημερομηνία αρχειοθέτησης </h3>
+                <div class="row">
+                    <div class="col-12 my-2">
+                        <input class="form-control" type="text" size="30"  id="closure_date" name="closure_date" placeholder="{{closure_date}}">
+                    </div>
+                </div>
+
+
                 <h3 class="my-2"> Κατηγορία </h3>
                     <div class="row">
                         <div class="col-12 my-2">
                         <select class="form-control" id = "category" name="category">
-                            <option value="{{category}}">{{category}}</option>
+                            <option value="{{category}}" disabled selected hidden>{{category}}</option>
                         {{/with}}
                             {{#each categories }}
                                 <option value={{name}}> {{name}} </option>
@@ -57,9 +88,11 @@
                 <h3 class="my-2"> Στοιχεία επικοινωνίας </h3>
                     <div class="row">
                         <div class="col-6 my-2">
+                             <legend for="title"> Τηλέφωνο </legend>
                             <input class="form-control" type="text" size="30"  id="title" name="title" placeholder="{{contact_phone}}">
                         </div>
                         <div class="col-6 my-2">
+                            <legend for="title"> Email </legend>
                             <input class="form-control" type="text" size="30"  id="title" name="title" placeholder="{{contact_email}}">
                         </div>
                     </div>
@@ -103,7 +136,7 @@
                     </div>
                     
                     <div class="col-1 mt-4">
-                        <button type="submit" class="btn btn-primary" formaction="/admin_update?failure_id={{id}}"> Ενημέρωση </button>
+                        <button type="submit" class="btn btn-primary"> Ενημέρωση </button>
                     </div>
                     {{/with}} 
                 </div>          

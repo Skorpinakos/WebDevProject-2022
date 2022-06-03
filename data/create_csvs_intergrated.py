@@ -17,7 +17,7 @@ def create_all():
         'Location': {"id": ['integer', True], "building": ['string', False], "coordinates_x": ['integer', False], "coordinates_y": ['integer', False]},
 
         'Ticket': {"id": ['integer', True], "title": ['string', False], "description": ['text', False], "creation_date": ['date', False],
-                   "closure_date": ['date', False], "state": ['string', False], "image_path": ['string', False], "contact_phone": ['string', False], "contact_email": ['string', False],
+                   "closure_date": ['date', False], "state": ['string', False], "image_path": ['string', False], "ip": ['string', False], "contact_phone": ['string', False], "contact_email": ['string', False],
                    "locale": ['integer', False, 'Location', 'id'], "category": ['string', False]},
 
         'Contract': {"id": ['integer', True], "key": ['string', False, True], "details": ['text', False], "date": ['date', False],
@@ -106,7 +106,7 @@ def create_all():
                                """Το τρίτο σκαλί έχει σπάσει και είναι επικίνδυνο να σκοντάψει ή να γλιστρίσει κάποιος"""]
         contract_details = ['Αλλαγή σπασμένου σωλήνα', 'Αλλαγή λάμπας',
                             'Επισκευή έδρανου', 'Αλλαγή διακόπτη', 'Πρόχειρη συγκόληση μαρμάρων στη σκάλα']
-        states = ['Υπό επεξεργασία', 'Επιβεβαιωμένη',
+        states = ['Υπό επεξεργασία',
                   'Ανοιχτή', 'Υπό επισκευή', 'Κλειστή']
         categories = ['Ηλεκτρολoγικά',
                       'Υδραυλικά', 'Μηχανολογικά', 'Οικοδομικά', 'Ελαιοχρωματιστικά']
@@ -155,6 +155,8 @@ def create_all():
                                 else:
                                     sname = fake.last_name_male()
                                 temp_dict[name] = sname
+                            elif name == 'ip':
+                                temp_dict[name] = fake.ipv6()
 
                         elif typos == 'text':
                             if name == 'description':

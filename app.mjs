@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, callback) => {
         //console.log(file)
-        let filename = Date.now() + file.originalname;
+        let filename = Date.now() + file.originalname.replaceAll(' ', '_');
         callback(null, filename)
     }
 })
@@ -112,27 +112,10 @@ let categories = [
 ]
 
 let states =[
-    {'name':'open'}
-]
-let locations = [
-    {'id':0, 'building':buildings[0], 'coordinates_x':114, 'coordinates_y':223},
-    {'id':2, 'building':buildings[2], 'coordinates_x':294, 'coordinates_y':359},
-    {'id':3, 'building':buildings[5], 'coordinates_x':517, 'coordinates_y':53},
-]
-
-let tickets =[
-    {'id': 0, 'title': 'lorem', 'description': 'lorem ipsum',
-    'creation_date': '12/12/2012', 'closure_date' : '12/12/2112', 'image_path' : 'images/a1.jpg', 'contact_phone': '+306928394825', 
-    'contact_email': 'blablabla@gmail.com', 'state' : states[0], 
-    'locale' : locations[0], 'type' : categories[0]},
-    {'id': 2, 'title': 'lorem', 'description': 'lorem ipsum',
-    'creation_date': '12/12/2012', 'closure_date' : '12/12/2112', 'image_path' : 'images/a2.jpg', 'contact_phone': '+306928394825', 
-    'contact_email': 'blablabla@gmail.com', 'state' : states[0], 
-    'locale' : locations[1], 'type' : categories[1]},
-    {'id': 3, 'title': 'lorem', 'description': 'lorem ipsum',
-    'creation_date': '12/12/2012', 'closure_date' : '12/12/2112', 'image_path' : 'images/a3.jpg', 'contact_phone': '+306928394825', 
-    'contact_email': 'blablabla@gmail.com', 'state' : states[0], 
-    'locale' : locations[2], 'type' : categories[2]}
+    {'name':'Υπό επεξεργασία'},
+    {'name':'Ανοιχτή'},
+    {'name':'Υπό επισκευή'},
+    {'name':'Κλειστή'}
 ]
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// backend functions
@@ -221,6 +204,7 @@ let give_contractor_page = function(req,res){
           Object.assign(info_to_pass,rows[0]);
           info_to_pass['coords_to_show_x']=(info_to_pass['coordinates_x']*x_ratio+x0);
           info_to_pass['coords_to_show_y']=(info_to_pass['coordinates_y']*y_ratio+y0);
+          info_to_pass['key'] = key;
           res.render('contractor_page', {layout : 'layout',failure_info:info_to_pass, buildings : buildings, categories : categories});
         }
       });    // fed ton an #each helper), we can use #
@@ -267,7 +251,7 @@ let give_admin_page = function(req,res){
         info_to_pass['coords_to_show_y']=(info_to_pass['coordinates_y']*y_ratio+y0);
         
         //console.log(rows)
-        res.render('admin_page', {layout : 'layout',failure_info:info_to_pass});
+        res.render('admin_page', {layout : 'layout', failure_info:info_to_pass, buildings : buildings, categories : categories, states:states});
       });
       
 };
@@ -313,6 +297,24 @@ let is_it_valid_report= function(report_info){
 
 };
 
+let current_datetime = function(req,res){
+  let today = new Date();
+  let year = String(today.getFullYear());
+  let month = String(today.getMonth() + 1);
+  if (month.length == 1){
+    month = '0' + month;
+  }
+  let day = String(today.getDate());
+  if (day.length == 1){
+    day = '0' + day;
+  }
+  let date = year + '-' + month + '-' + day;
+  let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  
+  let now = date + ' ' + time;
+  return now;
+}
+
 let submit_report = function(req,res){
     if (is_it_valid_report(req)){
         let info = req.body
@@ -336,12 +338,8 @@ let submit_report = function(req,res){
                 console.log('find_biggest_failure_id');
                 console.log(err.message);
             } 
-            let today = new Date();
-            let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-
-            let now = date + ' ' + time; //changed date format for sqlite date comparisson
-            //console.log(today_date);
+            let now = current_datetime();
+            console.log(now);
             let failure_data={'id':rows_3[0]['id']+1, 'title':info['title'],'description':info['description'],'creation_date':now,'closure_date':null,'state': 'Υπό επεξεργασία','image_path':image_path,'contact_phone':info['phone'],'contact_email':info['email'],'locale':rows_1[0]['id']+1,'category':info['category']};//change type atribute frome 1 to info['category]
             model.push_failure_in_db(failure_data,(err, rows_4) => {   
                 if (err){
@@ -350,20 +348,23 @@ let submit_report = function(req,res){
                 let id_dict_to_pass={'failure_id_passed':failure_data['id']}
                 //console.log(id_dict_to_pass['i'])
                 //console.log(info);
-                var mailOptions = {
+                let mailOptions = {
                     from: 'unireportuniversityofpatras@gmail.com',
                     to: String(info['email']),
                     subject: 'Αναφορά βλάβης',
                     text: "Αυτή η απάντηση είναι αυτοματοποιημένη. Η αναφορά σας στην πλατφόρμα 'Uni Report' του Πανεπιστημίου Πατρών καταχωρήθηκε με σειριακό κωδικό: '"+String(failure_data['id'])+"' . Μπορείτε να παρακολουθήσετε την εξέλιξη της βλάβης στην σελίδα της υπηρεσίας εισάγοντας στην γραμμή αναζήτησης τον κωδικό της βλάβης. Τίτλος βλάβης: "+String(failure_data['title']),
                   };
                   
-                transporter.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                      console.log(error);
-                    } else {
-                      console.log('Email sent: ' + info.response);
-                    }
-                  }); 
+                  if(mailOptions.to){
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                          console.log(error);
+                        } else {
+                          console.log('Email sent: ' + info.response);
+                        }
+                      }); 
+                  }
+
                 res.render('successful_report', {layout : 'layout', id_dict_to_pass:id_dict_to_pass});
                 });
             });
@@ -382,15 +383,114 @@ let submit_report = function(req,res){
 
 };
 
+let is_empty = function(v){
+  if (v.length && v == ''){
+    return [1];
+  }
+
+  for (let i =0; i < v.length; i++){
+    if (v[i] != ''){
+      if(Array.isArray(v)){
+        return [0,v[i]]
+      }
+      return [0];
+    }
+  }
+  return [1];
+}
+
+let filter = function(body){
+  let ticket_info = {};
+  let locale_info = {};
+  let l = ['building', 'coordinates_x', 'coordinates_y'];
+  for (const [key, value] of Object.entries(body)) {
+    //console.log(key, value);
+    let e = is_empty(value)
+    console.log(e)
+    if(e[0]){
+      delete body[key];
+    }
+    else{
+      if(l.includes(key)){
+        if(e.length == 1){
+          locale_info[key] = value;
+        }
+        else{
+          locale_info[key] = e[1];
+        }
+      }
+      else{
+        if(e.length == 1){
+          ticket_info[key] = value;
+        }
+        else{
+          ticket_info[key] = e[1];
+        }
+      }
+    }
+  }
+  return {
+    'ticket_info': ticket_info,
+    'locale_info': locale_info
+  };
+}
+
+
+
 let admin_update = function(req,res){
   let failure_id=req.query['failure_id'];
-  console.log(req.query);
-
-
+  let locale_id=req.query['locale_id'];
+  let body = req.body;
+  console.log(body)
+  let filtered_body = filter(body);
+  
+  let ticket_info = filtered_body.ticket_info;
+  let locale_info = filtered_body.locale_info;
+  
+  if(ticket_info['state']){
+    if(ticket_info['state'] == 'Κλειστή'){
+      ticket_info['closure_date'] = current_datetime();
+    }
+  }
+  if(req.files.length > 0){
+    let image_path = String(String(req.files[0].destination) + '/' + String(req.files[0].filename));
+    image_path=image_path.replace('public/','');
+    ticket_info['image_path'] = image_path;
+  }
+  console.log(ticket_info,locale_info)
+  //console.log(filtered_body)
+  model.update_report(failure_id, locale_id, ticket_info, locale_info, (err) => {   
+    if (err){
+      console.log(err.message);
+    } 
+    res.redirect(String('/admin_page?failure_id=' + failure_id));
+  });
 };
 
-let contractor_update = function(req,res){
 
+let contractor_update = function(req,res){
+  let failure_id=req.query['failure_id'];
+  let locale_id=req.query['locale_id'];
+  let key=req.query['key'];
+  let body = req.body;
+  console.log(body)
+  let filtered_body = filter(body);
+  
+  let ticket_info = filtered_body.ticket_info;
+  let locale_info = filtered_body.locale_info;
+  
+  if(ticket_info['state']){
+    if(ticket_info['state'] == 'Κλειστή'){
+      ticket_info['closure_date'] = current_datetime();
+    }
+  }
+  //console.log(filtered_body)
+  model.update_report(failure_id, locale_id, ticket_info, locale_info, (err) => {   
+    if (err){
+      console.log(err.message);
+    } 
+    res.redirect(String('/contractor_page?input_text=' + key));
+  });
 
 
 
@@ -418,7 +518,7 @@ router.route('/failure').get(give_failure_page);
 router.route('/report_complete').post(upload.any(), submit_report);
 router.route('/contractor_login').get(give_contractor_login_page);
 router.route('/contractor_page').get(give_contractor_page);
-router.route('/contractor_update').post(contractor_update);
+router.route('/contractor_update').post(upload.any(),contractor_update);
 router.route('/admin_login').get(give_admin_login_page);
 router.route('/admin_history').get(give_admin_history);
 router.route('/admin_page').get(give_admin_page);
