@@ -28,25 +28,17 @@
                     <legend> Τοποθεσία </legend>
                     <p><strong id="'test">Κτίριο:</strong> {{building}}</p>
                     <div class="row">
-                        <div class="col-1">
-                            <p><strong>Δυτικά:</strong> </p>
-                        </div>
-                        <div class="col-1" id="x_coords">
-                            <p> {{coords_to_show_x}} </p>
+                        <div class="col-3">
+                            <p id="x_coords"><strong>Δυτικά: </strong> {{coords_to_show_x}} </p>
                             <p id = "x" style="display: none ;">{{coordinates_x}}</p>
-                            
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-1">
-                            <p><strong>Βόρεια:</strong> </p>
-                        </div>
-                        <div class="col-1" id="y_coords">
-                            <p> {{coords_to_show_y}} </p>
+                        <div class="col-3">
+                            <p id="y_coords"><strong>Βόρεια: </strong>{{coords_to_show_y}}</p>
                             <p id = "y" style="display: none ;">{{coordinates_y}}</p>
                         </div>
                     </div>
- 
                 </div>
             </div>
             {{/with}}

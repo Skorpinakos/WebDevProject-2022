@@ -24,21 +24,17 @@
 
                 <h3 class="my-1">Τοποθεσία</h3>
                 <div class="row">
-                    <legend for="coords"> Συντεταγμένες </legend>
-                    <em class="mb-1"> Μπορείτε να εισάγετε τις συντεταγμένες κάνοντας click στον παραπάνω χάρτη.</em>
-                    <div class="col-6 my-2">
+                    <em class="mb-1"> Μπορείτε να εισάγετε την ακριβή τοποθεσία της βλάβης κάνοντας click στον παραπάνω χάρτη.</em>
+                    <div class="col-6 my-2" hidden>
                         <label for="coords"> Δυτικά </label>
                         <input type="text" class="form-control" size="30"  id="West" name="West" placeholder="" required>
                     </div>
-                    <div class="col-6 my-2">
+                    <div class="col-6 my-2" hidden>
                         <label for="coords"> Βόρεια </label>
                         <input type="text" class="form-control" size="30"  id="North" name="North" placeholder="" required>
                     </div>
-                </div>
 
-                <div class="row">
                     <div class="col-12 my-2">
-                        <legend for="building"> Κτίριο </legend>
                         <select class="form-control" id = "building" name="building" required>
                             {{#each buildings}}
                                 <option value="{{{name}}}"> {{name}} </option>

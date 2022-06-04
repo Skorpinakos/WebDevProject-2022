@@ -63,9 +63,9 @@ def create_all():
                 if primary == False:
                     if typos == 'integer':
                         if name == 'coordinates_x':
-                            temp_dict[name] = random.randint(200, 800)
+                            temp_dict[name] = random.randint(200, 700)
                         elif name == 'coordinates_y':
-                            temp_dict[name] = random.randint(200, 800)
+                            temp_dict[name] = random.randint(100, 500)
 
                     elif typos == 'string':
                         if name == 'building':
@@ -117,7 +117,7 @@ def create_all():
         if entity == 'Contract':
             end = 74
         if entity == 'Ticket':
-            end = 350
+            end = 100
         for i in range(1, end):
             temp_dict = {}
             for attribute in entity_diction.keys():

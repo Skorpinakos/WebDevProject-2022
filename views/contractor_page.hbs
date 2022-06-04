@@ -10,20 +10,22 @@
             <form method="POST" action="/contractor_update?failure_id={{id}}&locale_id={{locale}}&key={{key}}" enctype="multipart/form-data">
             
                 <div hidden>
-                    <input type="text" class="form-control" size="30"  id="West" name="West" placeholder=id>
+                    <input type="text" class="form-control" size="30"  id="random" name="random" placeholder=id>
                 </div>
                 <h3 class="my-1">Τοποθεσία</h3>
                 <div class="row">
-                    <legend for="coords"> Συντεταγμένες </legend>
-                    <div class="col-6 my-2">
+                    <legend class='mt-3' for="coords"> Συντεταγμένες (px) </legend>
+                    <em class="mb-1"> Μπορείτε να εισάγετε την ακριβή τοποθεσία της βλάβης κάνοντας click στον παραπάνω χάρτη.</em>
+                    <div class="col-6 my-1">
                         <label for="coords"> Δυτικά </label>
-                        <input type="text" class="form-control" size="30"  id="West" name="West" placeholder="{{coords_to_show_x}}">
+                        <input type="text" class="form-control" size="30"  id="West" name="West" placeholder="{{coordinates_x}}">
                         <p id = "x" style="display: none ;">{{coordinates_x}}</p>
                     </div>
-                    <div class="col-6 my-2">
+                    <div class="col-6 my-1">
                         <label for="coords"> Βόρεια </label>
-                        <input type="text" class="form-control" size="30"  id="North" name="North" placeholder="{{coords_to_show_y}}">
+                        <input type="text" class="form-control" size="30"  id="North" name="North" placeholder="{{coordinates_y}}">
                         <p id = "y" style="display: none ;">{{coordinates_y}}</p>
+                        <p id = "f_id" style="display: none ;">{{id}}</p>
                     </div>
                 </div>
 
@@ -123,4 +125,4 @@
             </form>
         </div>
 </div>
-<script src="draw_map_coordinates_for_admin_and_contractor"></script>
+<script src="scripts/admin.js"></script>

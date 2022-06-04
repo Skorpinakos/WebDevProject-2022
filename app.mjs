@@ -67,13 +67,14 @@ app.set('view engine', 'hbs'); //set rendering engine the handlebars
 // }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////// temp data before implementation of db
-let x0=0;
-let x_ratio=1;
-let y0=0;
-let y_ratio=1;
+let x0=21.783835;
+let x_ratio=(21.795379-x0)/1100;
+let y0=38.292066;
+let y_ratio=(y0-38.286980)/600;
+let ips={};
+let last_clear_time=Date.now();
 let buildings = [
-    {'name' : 'Κτίριο Α'},
-    {'name' : 'Κτίριο Β'},
+   {'name' :'Κτίριο Τμήματος Ηλεκτρολόγων Μηχανικών και Τεχνολογίας Υπολογιστών'},
     {'name' : 'Τρία συγκροτήματα αμφιθεάτρων της Σχολής Θετικών Επιστημών (ΑΘΕ)'},
     {'name' :'Κτίριο Τμήματος Φυσικής'},
     {'name' :'Κτίριο Τμήματος Χημείας'},
@@ -86,21 +87,11 @@ let buildings = [
     {'name' :'Κτίριο Τμήματος Βιολογίας'},
     {'name' :'Κτίριο Τμήματος Γεωλογίας'},
     {'name' :'Κτίριο Τμήματος Μαθηματικών'},
-    {'name' :'Κτίριο Προκλινικών Λειτουργιών του Τμήματος Ιατρικής'},
-    {'name' :'Κτιριακό συγκρότημα Κλινικών Λειτουργιών του Τμήματος της Ιατρικής'},
-    {'name' :'Συγκρότημα Προκατασκευασμένων Κτιρίων'},
     {'name' :'Κτίριο Κεντρικής Βιβλιοθήκης και Κέντρου Πληροφόρησης'},
     {'name' :'Κτίριο Συνεδριακού και Πολιτιστικού Κέντρου του Πανεπιστημίου'},
-    {'name' :'Λοιπές εγκαταστάσεις'},
-    {'name' :'Φοιτητική Εστία'},
-    {'name' :'Γραφεία του Πανεπιστημίου'},
-    {'name' :'Αθλητικό κέντρο και γήπεδα'},
-    {'name' :'Πανεπιστημιακό Γυμναστήριο'},
     {'name' :'Μουσείο Επιστημών και Τεχνολογίας'},
     {'name' :'Ραδιοφωνικός Σταθμός “UPfm”'},
-    {'name' :'Συγκρότημα Προτύπων Πειραματικών Σχολείων του Πανεπιστημίου Πατρών “Ε. Παπανούτσος”'},
-    {'name' :'Κέντρο Επιμόρφωσης και Διά Βίου Μάθησης (Κ.Ε.ΔΙ.ΒΙ.Μ.)'},
-    {'name' :'Πανεπιστημιακό Γενικό Νοσοκομείο Πατρών'}
+    {'name' :'Τμήμα Διοίκησης Επιχειρήσεων'},
 ]
 
 let categories = [
@@ -144,6 +135,26 @@ let return_open_failures = function(req,res){
         //console.log(rows)
       });
     
+
+};
+
+let return_failure_coords = function(req,res){
+  //rest api command, Serves list of open failures that looks like [{'id':1,'x':100,'y',200},{'id':1,'x':700,'y',400},...], it is inside a json file under the name 'open_failures'
+  let key=parseInt(req.query['failure_id'])-1;
+  //console.log(key);
+  model.get_failure_info(key, (err, rows) => {   
+    if (err){
+      console.log(err.message);
+    }
+    let info_to_pass={};
+    Object.assign(info_to_pass,rows[0]);
+ 
+
+    
+    //console.log(rows)
+    res.json(info_to_pass);
+  });    // fed ton an #each helper), we can use #
+  
 
 };
 
@@ -202,8 +213,8 @@ let give_contractor_page = function(req,res){
         else{
           let info_to_pass={};
           Object.assign(info_to_pass,rows[0]);
-          info_to_pass['coords_to_show_x']=(info_to_pass['coordinates_x']*x_ratio+x0);
-          info_to_pass['coords_to_show_y']=(info_to_pass['coordinates_y']*y_ratio+y0);
+          info_to_pass['coords_to_show_x']=Math.round((info_to_pass['coordinates_x']*x_ratio+x0)*100000000)/100000000;
+          info_to_pass['coords_to_show_y']=Math.round((y0-info_to_pass['coordinates_y']*y_ratio)*100000000)/100000000;
           info_to_pass['key'] = key;
           res.render('contractor_page', {layout : 'layout',failure_info:info_to_pass, buildings : buildings, categories : categories});
         }
@@ -247,8 +258,8 @@ let give_admin_page = function(req,res){
         let info_to_pass={};
         Object.assign(info_to_pass,rows[0]);
      
-        info_to_pass['coords_to_show_x']=(info_to_pass['coordinates_x']*x_ratio+x0);
-        info_to_pass['coords_to_show_y']=(info_to_pass['coordinates_y']*y_ratio+y0);
+        info_to_pass['coords_to_show_x']=Math.round((info_to_pass['coordinates_x']*x_ratio+x0)*100000000)/100000000;
+        info_to_pass['coords_to_show_y']=Math.round((y0-info_to_pass['coordinates_y']*y_ratio)*100000000)/100000000;
         
         //console.log(rows)
         res.render('admin_page', {layout : 'layout', failure_info:info_to_pass, buildings : buildings, categories : categories, states:states});
@@ -267,8 +278,9 @@ let give_failure_page = function(req,res){
         let info_to_pass={};
         Object.assign(info_to_pass,rows[0]);
        
-        info_to_pass['coords_to_show_x']=(info_to_pass['coordinates_x']*x_ratio+x0);
-        info_to_pass['coords_to_show_y']=(info_to_pass['coordinates_y']*y_ratio+y0);
+        info_to_pass['coords_to_show_x']=Math.round((info_to_pass['coordinates_x']*x_ratio+x0)*100000000)/100000000;
+        info_to_pass['coords_to_show_y']=Math.round((y0-info_to_pass['coordinates_y']*y_ratio)*100000000)/100000000;
+
         
         //console.log(info_to_pass);
         res.render('failure', {layout : 'layout',failure_info:info_to_pass});
@@ -316,6 +328,18 @@ let current_datetime = function(req,res){
 }
 
 let submit_report = function(req,res){
+  let limit=5;
+  if ((Date.now()-last_clear_time)>1800000){ips={};}
+  let ip=String(req.socket.remoteAddress);
+  if (ips[ip]==undefined){ips[ip]=0;}
+  ips[ip]=(ips[ip]+1);
+  console.log(Date.now()-last_clear_time);
+  if (ips[ip]>limit){
+    console.log('User made too many reports (' +limit+ ') in the last half hour');
+    let error={'e_type':'spam','message':'user made too many reports('+limit+')in the last half hour'};
+    res.render('report', {layout : 'layout', buildings : buildings, categories : categories, error:error  });
+    return
+  }
     if (is_it_valid_report(req)){
         let info = req.body
         //console.log(req);
@@ -339,8 +363,10 @@ let submit_report = function(req,res){
                 console.log(err.message);
             } 
             let now = current_datetime();
-            console.log(now);
-            let failure_data={'id':rows_3[0]['id']+1, 'title':info['title'],'description':info['description'],'creation_date':now,'closure_date':null,'state': 'Υπό επεξεργασία','image_path':image_path,'contact_phone':info['phone'],'contact_email':info['email'],'locale':rows_1[0]['id']+1,'category':info['category']};//change type atribute frome 1 to info['category]
+            //console.log(req.socket.remoteAddress);
+
+            //console.log(ips);
+            let failure_data={'id':rows_3[0]['id']+1,'ip':ip, 'title':info['title'],'description':info['description'],'creation_date':now,'closure_date':null,'state': 'Υπό επεξεργασία','image_path':image_path,'contact_phone':info['phone'],'contact_email':info['email'],'locale':rows_1[0]['id']+1,'category':info['category']};//change type atribute frome 1 to info['category]
             model.push_failure_in_db(failure_data,(err, rows_4) => {   
                 if (err){
                     console.log(err.message);
@@ -376,7 +402,7 @@ let submit_report = function(req,res){
         //// also add code to save image in disc and set a path that will be inputed in the db
     }
     else{
-        let error={'e_type':'undefined','message':'Η υποβολή ήταν ανεπιτυχής'};
+        let error={'e_type':'failed application','message':'Η υποβολή ήταν ανεπιτυχής'};
         res.render('report', {layout : 'layout', buildings : buildings, categories : categories, error:error  });
 
     }
@@ -511,6 +537,7 @@ let delete_report = function(req,res){
 app.use(router);
 router.route('/').get(give_home_page);
 router.route('/open_failures').get(return_open_failures);
+router.route('/failure_coordinates_by_id').get(return_failure_coords);
 router.route('/report').get(give_report_page);
 router.route('/history').get(give_history_page);
 router.route('/search').get(give_result_page);

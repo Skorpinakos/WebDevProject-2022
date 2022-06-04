@@ -147,9 +147,9 @@ const get_open_failures_coords = (n, callback) => {
 
 const push_failure_in_db = (info,callback) => {
 
-    let sql="INSERT INTO Ticket (id,title,description,creation_date,closure_date,state,image_path,contact_phone,contact_email,locale,category) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+    let sql="INSERT INTO Ticket (id,title,description,creation_date,closure_date,state,image_path,ip,contact_phone,contact_email,locale,category) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
     const db = new sqlite3.Database(db_name);
-    db.all(sql, [info['id'],info['title'],info['description'],info['creation_date'],info['closure_date'],info['state'],info['image_path'],info['contact_phone'],info['contact_email'],info['locale'],info['category']], (err, rows) => {
+    db.all(sql, [info['id'],info['title'],info['description'],info['creation_date'],info['closure_date'],info['state'],info['image_path'],info['ip'],info['contact_phone'],info['contact_email'],info['locale'],info['category']], (err, rows) => {
     if (err) {
         db.close();
         callback(err, null);
