@@ -311,19 +311,40 @@ let is_it_valid_report= function(report_info){
 
 let current_datetime = function(req,res){
   let today = new Date();
+  
   let year = String(today.getFullYear());
+
   let month = String(today.getMonth() + 1);
   if (month.length == 1){
     month = '0' + month;
   }
+
   let day = String(today.getDate());
   if (day.length == 1){
     day = '0' + day;
   }
+
   let date = year + '-' + month + '-' + day;
-  let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+  let hours = String(today.getHours());
+  if (hours.length == 1){
+    hours = '0' + hours;
+  }
+
+  let minutes = String(today.getMinutes());
+  if (minutes.length == 1){
+    minutes = '0' + minutes;
+  }
+
+  let seconds = String(today.getSeconds());
+  if (seconds.length == 1){
+    seconds = '0' + seconds;
+  }
+
+  let time = hours + ":" + minutes + ":" + seconds;
   
   let now = date + ' ' + time;
+
   return now;
 }
 
